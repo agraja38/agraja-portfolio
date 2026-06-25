@@ -1,17 +1,17 @@
 export const SITE = {
   name: 'Agraja Wijayawardane',
-  title: 'Mechatronic Engineering Undergraduate',
+  title: 'Mechatronic Engineer',
   tagline: 'Building smarter factories through automation, robotics, and machine vision.',
   email: 'agraja@live.com',
   location: 'Colombo, Sri Lanka',
   cvPath: `${import.meta.env.BASE_URL}agraja-cv.pdf`,
   github: 'https://github.com/agraja38',
-  linkedin: '#',
+  linkedin: 'https://www.linkedin.com/in/agraja-wijayawardane-2a40b0241',
 }
 
 export const ABOUT = {
   paragraphs: [
-    'I am a Mechatronic Engineering undergraduate at Curtin Colombo with hands-on experience across industrial automation, robotics, machine vision, and factory maintenance.',
+    'I am a Mechatronic Engineer with hands-on experience across industrial automation, robotics, machine vision, and factory maintenance.',
     'Through training at Phoenix Industries and Rockland Distilleries, I have worked on vision-based rejection systems, PLC automation, pump and motor diagnostics, robotic integration, and production-line improvements — turning real factory challenges into practical engineering solutions.',
     'I thrive at the intersection of hardware and software: designing, testing, and improving systems that keep production moving efficiently.',
   ],
@@ -88,7 +88,7 @@ export const EDUCATION = [
   {
     institution: 'Curtin University',
     qualification: 'Mechatronic Engineering',
-    level: 'Undergraduate (Reading)',
+    level: 'Bachelor of Engineering',
     period: 'Since Jul 2022',
   },
   {
