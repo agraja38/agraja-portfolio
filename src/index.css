@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --surface: #f8f9fc;
+  --surface-elevated: #ffffff;
+  --text-primary: #0f1117;
+  --text-secondary: #5c6370;
+  --accent: #3b82f6;
+  --accent-muted: #dbeafe;
+  --border: rgba(15, 17, 23, 0.08);
+  --glass: rgba(255, 255, 255, 0.72);
+  --gradient-from: #eef2ff;
+  --gradient-to: #f8f9fc;
+}
+
+.dark {
+  --surface: #0a0a0f;
+  --surface-elevated: #12121a;
+  --text-primary: #f4f4f5;
+  --text-secondary: #a1a1aa;
+  --accent: #60a5fa;
+  --accent-muted: #1e3a5f;
+  --border: rgba(255, 255, 255, 0.08);
+  --glass: rgba(18, 18, 26, 0.65);
+  --gradient-from: #0f172a;
+  --gradient-to: #0a0a0f;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+  }
+
+  body {
+    @apply font-sans antialiased;
+    background-color: var(--surface);
+    color: var(--text-primary);
+  }
+
+  ::selection {
+    @apply bg-blue-500/30;
+  }
+}
+
+@layer components {
+  .glass-card {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .section-container {
+    @apply mx-auto w-full max-w-5xl px-5 sm:px-6 lg:px-8;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface)];
+    background: var(--accent);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    @apply scale-[1.02] shadow-lg shadow-blue-500/20;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border px-5 py-2.5 text-sm font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface)];
+    border-color: var(--border);
+    background: var(--glass);
+    color: var(--text-primary);
+  }
+
+  .btn-secondary:hover {
+    @apply scale-[1.02];
+    border-color: var(--accent);
+  }
+}

@@ -1,0 +1,40 @@
+---
+description: Agraja portfolio website standards — React, Vite, GitHub Pages
+alwaysApply: true
+---
+
+# Agraja Portfolio Website
+
+Modern, minimalist, interactive personal portfolio for **Agraja Wijayawardane**.
+
+## Tech Stack
+
+- React, Vite, Tailwind CSS, Framer Motion, Lucide React icons
+- **GitHub Pages only** for hosting (GitHub Actions deploy)
+- Do **not** use Vercel, Netlify, Replit, Streamlit, Firebase, Supabase, or paid hosting
+
+## Content Source
+
+- Use the CV PDF in `public/` as the main content source
+- Do **not** create a Projects section for now
+- Project-like work belongs inside relevant Experience entries
+
+## Privacy (strict)
+
+- **Show:** email only as public contact; general location as `Colombo, Sri Lanka` or `Sri Lanka`
+- **Never show:** phone numbers, exact home address, references' names/phones/private contact details
+- **Never commit or expose:** GitHub tokens, secrets, or private information
+
+## Design
+
+- Modern, premium, clean, interactive, minimalist — not a boring online CV
+- Dark mode by default with light/dark toggle
+- Fully responsive (phone, tablet, desktop)
+- Subtle Framer Motion animations, glassmorphism cards, soft gradients
+- Apple / Linear / Stripe-inspired feel; no clutter or long text blocks
+
+## Deployment
+
+- Repo base path: `/agraja-portfolio/` (not `username.github.io`)
+- Ensure `vite.config` base, Actions workflow, and asset paths work on GitHub Pages
+- CV download must work from `public/`
