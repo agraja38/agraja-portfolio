@@ -13,7 +13,7 @@
   --glass: rgba(255, 255, 255, 0.78);
   --gradient-from: #eef2ff;
   --gradient-to: #f8f9fc;
-  --bg-glow: rgba(59, 130, 246, 0.06);
+  --bg-glow: rgba(59, 130, 246, 0.09);
 }
 
 .dark {

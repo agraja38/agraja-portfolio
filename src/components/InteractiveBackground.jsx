@@ -1,18 +1,23 @@
 import { useEffect, useRef } from 'react'
 
-const PARTICLE_COUNT_DESKTOP = 55
-const PARTICLE_COUNT_MOBILE = 28
+const PARTICLE_COUNT_DESKTOP = 140
+const PARTICLE_COUNT_MOBILE = 65
 
 function createParticles(count, width, height) {
-  return Array.from({ length: count }, () => ({
-    x: Math.random() * width,
-    y: Math.random() * height,
-    radius: Math.random() * 1.2 + 0.4,
-    vx: (Math.random() - 0.5) * 0.15,
-    vy: (Math.random() - 0.5) * 0.15,
-    alpha: Math.random() * 0.35 + 0.15,
-    pulse: Math.random() * Math.PI * 2,
-  }))
+  return Array.from({ length: count }, (_, i) => {
+    const isStar = i % 3 !== 0
+    return {
+      x: Math.random() * width,
+      y: Math.random() * height,
+      radius: isStar ? Math.random() * 0.7 + 0.25 : Math.random() * 1.4 + 0.6,
+      vx: (Math.random() - 0.5) * (isStar ? 0.22 : 0.14),
+      vy: (Math.random() - 0.5) * (isStar ? 0.22 : 0.14),
+      alpha: isStar ? Math.random() * 0.45 + 0.25 : Math.random() * 0.4 + 0.2,
+      pulse: Math.random() * Math.PI * 2,
+      pulseSpeed: Math.random() * 0.002 + 0.0008,
+      isStar,
+    }
+  })
 }
 
 export default function InteractiveBackground() {
@@ -110,39 +115,54 @@ export default function InteractiveBackground() {
 
     const drawParticles = (w, h, isDark, dt, reduced) => {
       const list = particles.current
-      const baseColor = isDark ? '147, 197, 253' : '59, 130, 246'
+      const baseColor = isDark ? '147, 197, 253' : '37, 99, 235'
+      const accentColor = isDark ? '196, 181, 253' : '79, 70, 229'
+      const lightBoost = isDark ? 1 : 1.15
 
       for (const p of list) {
         if (!reduced) {
           p.x += p.vx
           p.y += p.vy
-          p.pulse += dt * 0.001
+          p.pulse += dt * p.pulseSpeed
 
-          if (p.x < 0) p.x = w
-          if (p.x > w) p.x = 0
-          if (p.y < 0) p.y = h
-          if (p.y > h) p.y = 0
+          if (p.x < -4) p.x = w + 4
+          if (p.x > w + 4) p.x = -4
+          if (p.y < -4) p.y = h + 4
+          if (p.y > h + 4) p.y = -4
 
           const dx = mouse.current.smoothX * w - p.x
           const dy = mouse.current.smoothY * h - p.y
           const dist = Math.sqrt(dx * dx + dy * dy)
-          if (dist < 180 && dist > 0) {
-            p.x += (dx / dist) * 0.08
-            p.y += (dy / dist) * 0.08
+          const pullRadius = p.isStar ? 220 : 180
+          if (dist < pullRadius && dist > 0) {
+            const strength = p.isStar ? 0.1 : 0.07
+            p.x += (dx / dist) * strength
+            p.y += (dy / dist) * strength
           }
         }
 
-        const flicker = reduced ? 1 : 0.7 + Math.sin(p.pulse) * 0.3
+        const flicker = reduced ? 1 : 0.55 + Math.sin(p.pulse) * 0.45
+        const color = p.isStar && Math.sin(p.pulse * 1.3) > 0.6 ? accentColor : baseColor
+        const opacity = Math.min(p.alpha * flicker * lightBoost, isDark ? 0.85 : 0.72)
+
         ctx.beginPath()
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(${baseColor}, ${p.alpha * flicker * (isDark ? 1 : 0.65)})`
+        ctx.fillStyle = `rgba(${color}, ${opacity})`
         ctx.fill()
+
+        if (p.isStar && !reduced) {
+          ctx.beginPath()
+          ctx.arc(p.x, p.y, p.radius * 2.2, 0, Math.PI * 2)
+          ctx.fillStyle = `rgba(${color}, ${opacity * (isDark ? 0.18 : 0.12)})`
+          ctx.fill()
+        }
       }
     }
 
     const drawNoise = (w, h, isDark) => {
-      ctx.fillStyle = isDark ? 'rgba(255, 255, 255, 0.012)' : 'rgba(15, 17, 23, 0.015)'
-      for (let i = 0; i < 40; i++) {
+      const count = isDark ? 40 : 55
+      ctx.fillStyle = isDark ? 'rgba(255, 255, 255, 0.012)' : 'rgba(37, 99, 235, 0.04)'
+      for (let i = 0; i < count; i++) {
         const x = (Math.sin(i * 12.9898 + time.current * 0.0002) * 0.5 + 0.5) * w
         const y = (Math.cos(i * 78.233 + time.current * 0.00015) * 0.5 + 0.5) * h
         ctx.fillRect(x, y, 1, 1)
