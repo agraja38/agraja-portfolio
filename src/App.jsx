@@ -8,22 +8,26 @@ import Qualifications from './components/Qualifications'
 import Volunteering from './components/Volunteering'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
+import InteractiveBackground from './components/InteractiveBackground'
 
 function App() {
   return (
-    <div className="min-h-screen">
-      <Navbar />
-      <main>
-        <Hero />
-        <About />
-        <Experience />
-        <Skills />
-        <Education />
-        <Qualifications />
-        <Volunteering />
-        <Contact />
-      </main>
-      <Footer />
+    <div className="relative min-h-screen">
+      <InteractiveBackground />
+      <div className="relative z-10">
+        <Navbar />
+        <main>
+          <Hero />
+          <About />
+          <Experience />
+          <Skills />
+          <Education />
+          <Qualifications />
+          <Volunteering />
+          <Contact />
+        </main>
+        <Footer />
+      </div>
     </div>
   )
 }
