@@ -50,23 +50,15 @@ export default function Contact() {
           </a>
           <a
             href={SITE.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
             aria-label="LinkedIn profile"
-            className="btn-secondary !px-4 opacity-60"
-            onClick={(e) => {
-              if (SITE.linkedin === '#') e.preventDefault()
-            }}
-            title={SITE.linkedin === '#' ? 'LinkedIn link coming soon' : 'LinkedIn'}
+            className="btn-secondary !px-4"
           >
             <Linkedin className="h-4 w-4" />
             LinkedIn
           </a>
         </div>
-
-        {SITE.linkedin === '#' && (
-          <p className="mt-4 text-xs text-[var(--text-secondary)]">
-            Update your LinkedIn URL in <code className="text-[var(--accent)]">src/data/content.js</code>
-          </p>
-        )}
       </motion.div>
     </section>
   )
