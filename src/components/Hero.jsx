@@ -103,7 +103,7 @@ export default function Hero() {
               <img
                 src={`${import.meta.env.BASE_URL}profile.jpg`}
                 alt="Agraja Wijayawardane"
-                className="h-full w-full object-cover object-[50%_18%]"
+                className="h-full w-full object-cover object-[50%_6%]"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none'
                   e.currentTarget.nextElementSibling?.classList.remove('hidden')
