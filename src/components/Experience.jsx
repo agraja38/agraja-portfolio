@@ -48,15 +48,17 @@ export default function Experience() {
                       <MapPin className="h-3.5 w-3.5" />
                       {job.location}
                     </span>
-                    <a
-                      href={job.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 transition-colors hover:text-[var(--accent)]"
-                    >
-                      Website
-                      <ExternalLink className="h-3 w-3" />
-                    </a>
+                    {job.url && job.url !== '#' && (
+                      <a
+                        href={job.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 transition-colors hover:text-[var(--accent)]"
+                      >
+                        Website
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    )}
                   </div>
 
                   <p className="mt-4 text-sm leading-relaxed text-[var(--text-secondary)]">

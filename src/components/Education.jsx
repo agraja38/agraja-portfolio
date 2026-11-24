@@ -28,7 +28,9 @@ export default function Education() {
               </div>
               <h3 className="font-semibold">{item.institution}</h3>
               <p className="mt-1 text-sm text-[var(--accent)]">{item.qualification}</p>
-              <p className="mt-2 text-sm text-[var(--text-secondary)]">{item.level}</p>
+              {item.level ? (
+                <p className="mt-2 text-sm text-[var(--text-secondary)]">{item.level}</p>
+              ) : null}
               <p className="mt-3 text-xs text-[var(--text-secondary)]">{item.period}</p>
             </motion.div>
           ))}

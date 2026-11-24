@@ -11,9 +11,9 @@ export const SITE = {
 
 export const ABOUT = {
   paragraphs: [
-    'I am a Mechatronic Engineer with hands-on experience across industrial automation, robotics, machine vision, and factory maintenance.',
-    'Through training at Phoenix Industries and Rockland Distilleries, I have worked on vision-based rejection systems, PLC automation, pump and motor diagnostics, robotic integration, and production-line improvements — turning real factory challenges into practical engineering solutions.',
-    'I thrive at the intersection of hardware and software: designing, testing, and improving systems that keep production moving efficiently.',
+    'I am a Mechatronic Engineer with hands-on experience across industrial automation, robotics, machine vision, factory maintenance, and engineering-side procurement.',
+    'Through roles at Chamara Engineering, Rockland Distilleries, and Phoenix Industries, I have worked on vision-based rejection systems, PLC automation, pump and motor diagnostics, robotic integration, BOQs, and supplier coordination — turning real engineering challenges into practical solutions.',
+    'I thrive at the intersection of hardware, software, and project delivery: designing, testing, improving systems, and keeping work moving efficiently from shop floor to supply chain.',
   ],
   highlights: [
     'Mechatronic Engineering',
@@ -23,12 +23,31 @@ export const ABOUT = {
     'PLC Systems',
     'Factory Maintenance',
     'Pump & Motor Diagnostics',
-    'Production-Line Improvement',
+    'BOQs & Cost Estimation',
+    'Procurement',
     'Practical Problem Solving',
   ],
 }
 
 export const EXPERIENCE = [
+  {
+    company: 'Chamara Engineering',
+    role: 'Junior Engineer',
+    department: 'Engineering Department',
+    location: 'Sri Lanka',
+    period: 'Mar 2026 – Present',
+    url: '#',
+    summary:
+      'Supporting engineering and commercial delivery through BOQs, quantity take-offs, cost estimation, procurement, and international supplier coordination.',
+    highlights: [
+      'Prepared Bills of Quantities (BOQs) from project drawings, specifications, and scope of work',
+      'Carried out quantity take-offs, cost estimations, and measurement of construction works',
+      'Managed procurement — sourcing suppliers, obtaining quotations, comparing prices, and placing orders',
+      'Coordinated with suppliers and internal teams to keep materials on schedule',
+      'Handled international trading activities including supplier communication, pricing, order processing, and shipping documentation',
+      'Reviewed quotations, commercial terms, and maintained BOQ, purchase, invoice, and order records',
+    ],
+  },
   {
     company: 'Rockland Distilleries',
     role: 'Engineering Intern',
@@ -80,6 +99,9 @@ export const SKILLS = {
     'CNC Machining',
     'Pneumatics',
     'Equipment Testing',
+    'BOQs & Quantity Take-offs',
+    'Cost Estimation',
+    'Procurement',
   ],
   soft: ['Analytical Skills', 'Teamwork', 'Leadership', 'Problem Solving'],
 }
@@ -87,9 +109,9 @@ export const SKILLS = {
 export const EDUCATION = [
   {
     institution: 'Curtin University',
-    qualification: 'Mechatronic Engineering',
-    level: 'Bachelor of Engineering',
-    period: 'Since Jul 2022',
+    qualification: 'Bachelor of Mechatronic Engineering',
+    level: '',
+    period: '2022 – present',
   },
   {
     institution: 'Ananda College',
@@ -111,10 +133,6 @@ export const QUALIFICATIONS = [
   { issuer: 'CHPB', title: 'Quantity Surveying Certificate Course NVQ 4', year: '2023' },
   { issuer: 'NIBM', title: 'Certificate in Computer Programming', year: '2017' },
   { issuer: 'NIBM', title: 'Certificate in Computer Science', year: '2017' },
-  { issuer: 'University of West London', title: 'Dip. LCM', year: '2020' },
-  { issuer: 'Trinity College London', title: 'Grade 8 Theory in Music', year: '2018' },
-  { issuer: 'Trinity College London', title: 'Piano — Grade 6', year: '2018' },
-  { issuer: 'ABRSM', title: 'Saxophone — Grade 8', year: '2017' },
   { issuer: 'Sri Lanka Life Saving', title: 'Life Guard', year: 'Since 2018' },
 ]
 
