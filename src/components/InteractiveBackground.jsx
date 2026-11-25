@@ -1,7 +1,12 @@
 import { useEffect, useRef } from 'react'
 
-const PARTICLE_COUNT_DESKTOP = 140
-const PARTICLE_COUNT_MOBILE = 65
+const isFirefox =
+  typeof navigator !== 'undefined' && /firefox/i.test(navigator.userAgent)
+
+const PARTICLE_COUNT_DESKTOP = isFirefox ? 90 : 140
+const PARTICLE_COUNT_MOBILE = isFirefox ? 45 : 65
+const MAX_DPR = isFirefox ? 1.25 : 2
+const LERP_SPEED = isFirefox ? 18 : 14
 
 function createParticles(count, width, height) {
   return Array.from({ length: count }, (_, i) => {
@@ -22,11 +27,11 @@ function createParticles(count, width, height) {
 
 export default function InteractiveBackground() {
   const canvasRef = useRef(null)
-  const containerRef = useRef(null)
-  const mouse = useRef({ x: 0.5, y: 0.5, smoothX: 0.5, smoothY: 0.5 })
+  const glowRef = useRef(null)
   const particles = useRef([])
   const rafId = useRef(0)
   const time = useRef(0)
+  const mouse = useRef({ x: 0.5, y: 0.5, smoothX: 0.5, smoothY: 0.5 })
   const state = useRef({
     reducedMotion: false,
     isDark: true,
@@ -37,10 +42,13 @@ export default function InteractiveBackground() {
 
   useEffect(() => {
     const canvas = canvasRef.current
-    const container = containerRef.current
-    if (!canvas || !container) return
+    const glow = glowRef.current
+    if (!canvas || !glow) return
 
-    const ctx = canvas.getContext('2d', { alpha: true })
+    const ctx = canvas.getContext('2d', {
+      alpha: true,
+      desynchronized: true,
+    })
     if (!ctx) return
 
     const readState = () => {
@@ -50,12 +58,12 @@ export default function InteractiveBackground() {
     }
 
     const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2)
+      const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR)
       const { innerWidth: w, innerHeight: h } = window
       state.current.width = w
       state.current.height = h
-      canvas.width = w * dpr
-      canvas.height = h * dpr
+      canvas.width = Math.floor(w * dpr)
+      canvas.height = Math.floor(h * dpr)
       canvas.style.width = `${w}px`
       canvas.style.height = `${h}px`
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
@@ -64,32 +72,30 @@ export default function InteractiveBackground() {
       particles.current = createParticles(count, w, h)
     }
 
-    const onPointerMove = (e) => {
+    const onMouseMove = (e) => {
       if (state.current.isMobile) return
       mouse.current.x = e.clientX / window.innerWidth
       mouse.current.y = e.clientY / window.innerHeight
     }
 
     const drawGrid = (w, h, isDark) => {
-      const spacing = 48
+      const spacing = isFirefox ? 64 : 48
       ctx.strokeStyle = isDark ? 'rgba(96, 165, 250, 0.04)' : 'rgba(59, 130, 246, 0.035)'
       ctx.lineWidth = 1
 
       const offsetX = (mouse.current.smoothX * 12) % spacing
       const offsetY = (mouse.current.smoothY * 12) % spacing
 
+      ctx.beginPath()
       for (let x = -spacing; x < w + spacing; x += spacing) {
-        ctx.beginPath()
         ctx.moveTo(x + offsetX, 0)
         ctx.lineTo(x + offsetX, h)
-        ctx.stroke()
       }
       for (let y = -spacing; y < h + spacing; y += spacing) {
-        ctx.beginPath()
         ctx.moveTo(0, y + offsetY)
         ctx.lineTo(w, y + offsetY)
-        ctx.stroke()
       }
+      ctx.stroke()
     }
 
     const drawSpotlight = (w, h, isDark) => {
@@ -118,8 +124,12 @@ export default function InteractiveBackground() {
       const baseColor = isDark ? '147, 197, 253' : '37, 99, 235'
       const accentColor = isDark ? '196, 181, 253' : '79, 70, 229'
       const lightBoost = isDark ? 1 : 1.15
+      const mx = mouse.current.smoothX * w
+      const my = mouse.current.smoothY * h
 
-      for (const p of list) {
+      for (let i = 0; i < list.length; i++) {
+        const p = list[i]
+
         if (!reduced) {
           p.x += p.vx
           p.y += p.vy
@@ -130,11 +140,12 @@ export default function InteractiveBackground() {
           if (p.y < -4) p.y = h + 4
           if (p.y > h + 4) p.y = -4
 
-          const dx = mouse.current.smoothX * w - p.x
-          const dy = mouse.current.smoothY * h - p.y
-          const dist = Math.sqrt(dx * dx + dy * dy)
+          const dx = mx - p.x
+          const dy = my - p.y
+          const distSq = dx * dx + dy * dy
           const pullRadius = p.isStar ? 220 : 180
-          if (dist < pullRadius && dist > 0) {
+          if (distSq < pullRadius * pullRadius && distSq > 0.01) {
+            const dist = Math.sqrt(distSq)
             const strength = p.isStar ? 0.1 : 0.07
             p.x += (dx / dist) * strength
             p.y += (dy / dist) * strength
@@ -150,7 +161,7 @@ export default function InteractiveBackground() {
         ctx.fillStyle = `rgba(${color}, ${opacity})`
         ctx.fill()
 
-        if (p.isStar && !reduced) {
+        if (p.isStar && !reduced && !isFirefox) {
           ctx.beginPath()
           ctx.arc(p.x, p.y, p.radius * 2.2, 0, Math.PI * 2)
           ctx.fillStyle = `rgba(${color}, ${opacity * (isDark ? 0.18 : 0.12)})`
@@ -159,42 +170,42 @@ export default function InteractiveBackground() {
       }
     }
 
-    const drawNoise = (w, h, isDark) => {
-      const count = isDark ? 40 : 55
-      ctx.fillStyle = isDark ? 'rgba(255, 255, 255, 0.012)' : 'rgba(37, 99, 235, 0.04)'
-      for (let i = 0; i < count; i++) {
-        const x = (Math.sin(i * 12.9898 + time.current * 0.0002) * 0.5 + 0.5) * w
-        const y = (Math.cos(i * 78.233 + time.current * 0.00015) * 0.5 + 0.5) * h
-        ctx.fillRect(x, y, 1, 1)
-      }
-    }
-
     let last = performance.now()
+    let frame = 0
 
     const animate = (now) => {
       const { width: w, height: h } = state.current
       const { reducedMotion, isDark, isMobile } = state.current
-      const dt = now - last
+      const rawDt = now - last
+      const dt = Math.min(rawDt, 32)
       last = now
       time.current = now
+      frame += 1
 
       if (isMobile && !reducedMotion) {
         mouse.current.x = 0.5 + Math.sin(now * 0.0004) * 0.22
         mouse.current.y = 0.5 + Math.cos(now * 0.00035) * 0.18
       }
 
-      const lerp = reducedMotion ? 1 : 0.06
+      // Frame-rate independent smoothing — snappier on Firefox
+      const lerp = reducedMotion ? 1 : 1 - Math.exp(-(LERP_SPEED / 60) * (dt / (1000 / 60)))
       mouse.current.smoothX += (mouse.current.x - mouse.current.smoothX) * lerp
       mouse.current.smoothY += (mouse.current.y - mouse.current.smoothY) * lerp
 
-      container.style.setProperty('--mx', `${mouse.current.smoothX * 100}%`)
-      container.style.setProperty('--my', `${mouse.current.smoothY * 100}%`)
+      // GPU-friendly transform instead of CSS custom properties every frame
+      const px = mouse.current.smoothX * w
+      const py = mouse.current.smoothY * h
+      glow.style.transform = `translate3d(${px}px, ${py}px, 0) translate(-50%, -50%)`
 
       ctx.clearRect(0, 0, w, h)
       drawSpotlight(w, h, isDark)
-      drawGrid(w, h, isDark)
+
+      // Grid every other frame on Firefox to keep pointer tracking smooth
+      if (!isFirefox || frame % 2 === 0) {
+        drawGrid(w, h, isDark)
+      }
+
       drawParticles(w, h, isDark, dt, reducedMotion)
-      if (!reducedMotion) drawNoise(w, h, isDark)
 
       rafId.current = requestAnimationFrame(animate)
     }
@@ -211,8 +222,16 @@ export default function InteractiveBackground() {
       attributeFilter: ['class'],
     })
 
-    window.addEventListener('resize', resize)
-    window.addEventListener('pointermove', onPointerMove, { passive: true })
+    let resizeTimer = 0
+    const onResize = () => {
+      window.clearTimeout(resizeTimer)
+      resizeTimer = window.setTimeout(resize, 100)
+    }
+
+    window.addEventListener('resize', onResize)
+    // mousemove is more reliable/performant than pointermove on Firefox
+    window.addEventListener('mousemove', onMouseMove, { passive: true })
+    window.addEventListener('pointermove', onMouseMove, { passive: true })
     motionQuery.addEventListener('change', readState)
     mobileQuery.addEventListener('change', () => {
       readState()
@@ -223,8 +242,10 @@ export default function InteractiveBackground() {
 
     return () => {
       cancelAnimationFrame(rafId.current)
-      window.removeEventListener('resize', resize)
-      window.removeEventListener('pointermove', onPointerMove)
+      window.clearTimeout(resizeTimer)
+      window.removeEventListener('resize', onResize)
+      window.removeEventListener('mousemove', onMouseMove)
+      window.removeEventListener('pointermove', onMouseMove)
       motionQuery.removeEventListener('change', readState)
       mobileQuery.removeEventListener('change', resize)
       themeObserver.disconnect()
@@ -233,10 +254,8 @@ export default function InteractiveBackground() {
 
   return (
     <div
-      ref={containerRef}
       className="interactive-bg pointer-events-none fixed inset-0 -z-10 overflow-hidden"
       aria-hidden="true"
-      style={{ '--mx': '50%', '--my': '50%' }}
     >
       <div className="interactive-bg__base absolute inset-0" />
 
@@ -244,12 +263,7 @@ export default function InteractiveBackground() {
       <div className="interactive-bg__blob interactive-bg__blob--2" />
       <div className="interactive-bg__blob interactive-bg__blob--3" />
 
-      <div
-        className="interactive-bg__radial absolute inset-0"
-        style={{
-          background: `radial-gradient(600px circle at var(--mx) var(--my), var(--bg-glow), transparent 65%)`,
-        }}
-      />
+      <div ref={glowRef} className="interactive-bg__glow" />
 
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
     </div>
